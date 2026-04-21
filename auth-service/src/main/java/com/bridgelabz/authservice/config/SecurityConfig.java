@@ -44,9 +44,7 @@ public class SecurityConfig {
 
                 // 🔥 Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register").permitAll()
-                        .requestMatchers("/health").permitAll()
-                        .requestMatchers("/auth/profile").authenticated()
+                        .requestMatchers("/auth/**", "/health", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
 
                 // 🔥 Stateless session (JWT)
