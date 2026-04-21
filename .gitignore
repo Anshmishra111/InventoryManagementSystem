@@ -36,4 +36,6 @@ auth-service/*.json
 auth-service/*.txt
 !auth-service/src/**
 product-service/
+auth-service/
+
 
