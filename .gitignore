@@ -34,4 +34,6 @@ replay_pid*
 # Temporary test files in auth-service (optional, but good to have if they are common)
 auth-service/*.json
 auth-service/*.txt
-!auth-service/src/**
+!auth-service/src/**
+product-service/
+
