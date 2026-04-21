@@ -1,0 +1,13 @@
+package com.bridgelabz.authservice.service;
+
+import com.bridgelabz.authservice.dto.AuthResponse;
+import com.bridgelabz.authservice.dto.LoginRequest;
+import com.bridgelabz.authservice.dto.RegisterRequest;
+import com.bridgelabz.authservice.entity.User;
+
+public interface AuthService {
+    AuthResponse register(RegisterRequest request);
+    AuthResponse login(LoginRequest request);
+    User getCurrentUserProfile(String email);
+}
+
