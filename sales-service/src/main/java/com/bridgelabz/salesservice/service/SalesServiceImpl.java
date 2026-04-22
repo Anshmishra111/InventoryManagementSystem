@@ -33,7 +33,7 @@ public class SalesServiceImpl implements SalesService {
     @Override
     public SalesOrder placeOrder(SalesOrder order) {
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("COMPLETED"); // Defaulting to COMPLETED for simple production version
+        order.setStatus("COMPLETED");
         return salesOrderRepository.save(order);
     }
 

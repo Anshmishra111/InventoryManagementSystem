@@ -30,5 +30,5 @@ public class SalesOrder {
 
     private LocalDateTime orderDate = LocalDateTime.now();
 
-    private String status = "PENDING"; // PENDING, COMPLETED, CANCELLED
+    private String status = "COMPLETED";
 }
