@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: website-controller
+  
+logging:
+  level:
+    org.springframework.web: INFO
+    com.bridgelabz.website: DEBUG
+
+# Microservices URLs (To be used by Feign Clients)
+services:
+  auth: http://localhost:8081
+  product: http://localhost:8082
+  warehouse: http://localhost:8083
+  supplier: http://localhost:8084
+  purchase: http://localhost:8085
+  movement: http://localhost:8086
+  alert: http://localhost:8087
+  sales: http://localhost:8088
+  report: http://localhost:8089
