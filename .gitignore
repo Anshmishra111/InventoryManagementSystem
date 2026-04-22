@@ -37,4 +37,5 @@ auth-service/*.txt
 !auth-service/src/**
 product-service/
 warehouse-service/
+auth-service/
 
