@@ -31,17 +31,4 @@ replay_pid*
 *.tar.gz
 *.rar
 
-# Temporary test files in auth-service (optional, but good to have if they are common)
-auth-service/*.json
-auth-service/*.txt
-!auth-service/src/**
-product-service/
-warehouse-service/
-auth-service/
-purchase-service/
-supplier-service/
-movement-service/
-alert-service/
-report-service/
-sales-service/
 
