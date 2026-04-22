@@ -40,4 +40,5 @@ warehouse-service/
 auth-service/
 purchase-service/
 supplier-service/
+movement-service/
 
