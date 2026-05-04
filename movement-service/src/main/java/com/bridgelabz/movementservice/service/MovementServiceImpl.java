@@ -5,6 +5,9 @@ import com.bridgelabz.movementservice.entity.MovementType;
 import com.bridgelabz.movementservice.entity.StockMovement;
 import com.bridgelabz.movementservice.repository.InventoryRepository;
 import com.bridgelabz.movementservice.repository.StockMovementRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -16,14 +19,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class MovementServiceImpl implements MovementService {
+    public static final String EXCHANGE = "inventory.exchange";
+    public static final String ROUTING_KEY = "inventory.movement.key";
 
     private final InventoryRepository inventoryRepository;
     private final StockMovementRepository stockMovementRepository;
+    private final RabbitTemplate rabbitTemplate;
 
-    public MovementServiceImpl(InventoryRepository inventoryRepository, StockMovementRepository stockMovementRepository) {
+    public MovementServiceImpl(InventoryRepository inventoryRepository, StockMovementRepository stockMovementRepository, RabbitTemplate rabbitTemplate) {
         this.inventoryRepository = inventoryRepository;
         this.stockMovementRepository = stockMovementRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Override
@@ -51,7 +59,23 @@ public class MovementServiceImpl implements MovementService {
         // INTERNAL logic can be expanded here if needed (subtract from source, add to dest)
 
         inventoryRepository.save(inventory);
-        return stockMovementRepository.save(movement);
+        StockMovement savedMovement = stockMovementRepository.save(movement);
+        
+        // Emit event to RabbitMQ for Product Service to sync stock
+        try {
+            java.util.Map<String, Object> event = new java.util.HashMap<>();
+            event.put("productId", savedMovement.getProductId());
+            event.put("quantity", savedMovement.getQuantity());
+            event.put("type", savedMovement.getType().toString());
+            event.put("timestamp", savedMovement.getTimestamp());
+            
+            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, event);
+            log.info("Emitted stock movement event: {}", event);
+        } catch (Exception e) {
+            log.error("Failed to emit stock movement event", e);
+        }
+
+        return savedMovement;
     }
 
     @Override
