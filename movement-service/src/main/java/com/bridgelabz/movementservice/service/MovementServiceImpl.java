@@ -5,6 +5,10 @@ import com.bridgelabz.movementservice.entity.MovementType;
 import com.bridgelabz.movementservice.entity.StockMovement;
 import com.bridgelabz.movementservice.repository.InventoryRepository;
 import com.bridgelabz.movementservice.repository.StockMovementRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,10 @@ public class MovementServiceImpl implements MovementService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "inventory", key = "#movement.productId"),
+        @CacheEvict(value = "inventory", allEntries = true)
+    })
     public StockMovement recordMovement(StockMovement movement) {
         movement.setTimestamp(LocalDateTime.now());
         
@@ -47,6 +55,7 @@ public class MovementServiceImpl implements MovementService {
     }
 
     @Override
+    @Cacheable(value = "inventory", key = "#productId")
     public List<Inventory> getInventoryByProductId(Long productId) {
         return inventoryRepository.findAllByProductId(productId);
     }
