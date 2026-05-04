@@ -8,6 +8,7 @@ public interface AlertService {
     AlertConfig createOrUpdateConfig(AlertConfig config);
     AlertConfig getConfigByProductId(Long productId);
     AlertHistory logAlert(Long productId, Integer currentQuantity, String message);
+    void sendLowStockAlert(Long productId, Long warehouseId, Integer currentQty, Integer reorderLevel);
     List<AlertHistory> getHistoryByProductId(Long productId);
     List<AlertConfig> getAllConfigs();
 }

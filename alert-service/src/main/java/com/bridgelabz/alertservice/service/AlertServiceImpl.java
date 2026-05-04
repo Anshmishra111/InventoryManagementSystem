@@ -14,10 +14,14 @@ public class AlertServiceImpl implements AlertService {
 
     private final AlertConfigRepository alertConfigRepository;
     private final AlertHistoryRepository alertHistoryRepository;
+    private final com.bridgelabz.alertservice.repository.AlertRepository alertRepository;
 
-    public AlertServiceImpl(AlertConfigRepository alertConfigRepository, AlertHistoryRepository alertHistoryRepository) {
+    public AlertServiceImpl(AlertConfigRepository alertConfigRepository, 
+                            AlertHistoryRepository alertHistoryRepository,
+                            com.bridgelabz.alertservice.repository.AlertRepository alertRepository) {
         this.alertConfigRepository = alertConfigRepository;
         this.alertHistoryRepository = alertHistoryRepository;
+        this.alertRepository = alertRepository;
     }
 
     @Override
@@ -58,5 +62,19 @@ public class AlertServiceImpl implements AlertService {
     @Override
     public List<AlertConfig> getAllConfigs() {
         return alertConfigRepository.findAll();
+    }
+
+    @Override
+    public void sendLowStockAlert(Long productId, Long warehouseId, Integer currentQty, Integer reorderLevel) {
+        com.bridgelabz.alertservice.entity.Alert alert = new com.bridgelabz.alertservice.entity.Alert();
+        alert.setRecipientId(1L); // Default admin
+        alert.setRelatedProductId(productId);
+        alert.setRelatedWarehouseId(warehouseId);
+        alert.setTitle("Scheduled Low Stock Check");
+        alert.setMessage("Low stock detected: Product " + productId + " has " + currentQty + " units (Threshold: " + reorderLevel + ")");
+        alert.setSeverity(com.bridgelabz.alertservice.entity.AlertSeverity.WARNING);
+        alert.setType(com.bridgelabz.alertservice.entity.AlertType.LOW_STOCK);
+        alert.setCreatedAt(LocalDateTime.now());
+        alertRepository.save(alert);
     }
 }
