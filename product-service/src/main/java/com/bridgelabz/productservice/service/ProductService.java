@@ -11,5 +11,6 @@ public interface ProductService {
     List<Product> getAllActiveProducts();
     List<Product> getLowStockProducts();
     void softDeleteProduct(Long id);
+    void updateStock(Long productId, int change, Double unitCost);
     List<Product> getProductsByCategory(String category);
 }
