@@ -2,10 +2,7 @@ package com.bridgelabz.website.controller;
 
 import com.bridgelabz.website.client.MovementClient;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +13,18 @@ public class MovementController {
 
     private final MovementClient movementClient;
 
-    @GetMapping("/history/{productId}")
-    public List<Map<String, Object>> getMovementHistory(@PathVariable Long productId) {
-        return movementClient.getMovementHistoryByProductId(productId);
+    @GetMapping
+    public List<Map<String, Object>> getAllMovements() {
+        return movementClient.getAllMovements();
+    }
+
+    @GetMapping("/inventory")
+    public List<Map<String, Object>> getInventory() {
+        return movementClient.getAllInventory();
+    }
+
+    @PostMapping
+    public Map<String, Object> recordMovement(@RequestBody Map<String, Object> movement) {
+        return movementClient.recordMovement(movement);
     }
 }
