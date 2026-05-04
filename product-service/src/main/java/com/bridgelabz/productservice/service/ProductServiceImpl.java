@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +20,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    @CachePut(value = "products", key = "#result.id")
-    @CacheEvict(value = "products", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(value = "products", key = "#result.id", condition = "#result != null"),
+        @CacheEvict(value = "products", allEntries = true)
+    })
     public Product createProduct(Product product) {
         if (productRepository.existsBySku(product.getSku())) {
             throw new RuntimeException("Product with SKU " + product.getSku() + " already exists");
@@ -30,8 +33,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    @CachePut(value = "products", key = "#id")
-    @CacheEvict(value = "products", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(value = "products", key = "#id"),
+        @CacheEvict(value = "products", allEntries = true)
+    })
     public Product updateProduct(Long id, Product details) {
         Product product = getProductById(id);
         
@@ -86,8 +91,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "products", key = "#productId")
-    @CacheEvict(value = "products", key = "'all_active'")
+    @Caching(evict = {
+        @CacheEvict(value = "products", key = "#productId"),
+        @CacheEvict(value = "products", key = "'all_active'")
+    })
     public void updateStock(Long productId, int change, Double unitCost) {
         Product product = getProductById(productId);
         product.setCurrentStockLevel(product.getCurrentStockLevel() + change);
