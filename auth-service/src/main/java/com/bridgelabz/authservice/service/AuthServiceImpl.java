@@ -111,10 +111,9 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         
         if (userData.containsKey("fullName")) user.setFullName((String) userData.get("fullName"));
-        if (userData.containsKey("role")) user.setRole(com.bridgelabz.authservice.entity.UserRole.valueOf((String) userData.get("role")));
+        if (userData.containsKey("role")) user.setRole(User.Role.valueOf((String) userData.get("role")));
         if (userData.containsKey("department")) user.setDepartment((String) userData.get("department"));
         if (userData.containsKey("isActive")) user.setActive((boolean) userData.get("isActive"));
-        if (userData.containsKey("phone")) user.setPhone((String) userData.get("phone"));
         
         return userRepository.save(user);
     }
