@@ -32,5 +32,20 @@ public class AuthResource {
     public ResponseEntity<User> getProfile(Authentication authentication) {
         return ResponseEntity.ok(authService.getCurrentUserProfile(authentication.getName()));
     }
+    @GetMapping("/users")
+    public ResponseEntity<java.util.List<User>> getAllUsers() {
+        return ResponseEntity.ok(authService.getAllUsers());
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody java.util.Map<String, Object> userData) {
+        return ResponseEntity.ok(authService.updateUser(id, userData));
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        authService.deleteUser(id);
+        return ResponseEntity.ok().build();
+    }
 }
 

@@ -98,5 +98,33 @@ public class AuthServiceImpl implements AuthService {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    @Override
+    public java.util.List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public User updateUser(Long id, java.util.Map<String, Object> userData) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        
+        if (userData.containsKey("fullName")) user.setFullName((String) userData.get("fullName"));
+        if (userData.containsKey("role")) user.setRole(com.bridgelabz.authservice.entity.UserRole.valueOf((String) userData.get("role")));
+        if (userData.containsKey("department")) user.setDepartment((String) userData.get("department"));
+        if (userData.containsKey("isActive")) user.setActive((boolean) userData.get("isActive"));
+        if (userData.containsKey("phone")) user.setPhone((String) userData.get("phone"));
+        
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        userRepository.delete(user);
+    }
 }
 

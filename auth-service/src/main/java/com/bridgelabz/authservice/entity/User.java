@@ -47,7 +47,7 @@ public class User {
     }
 
     public enum Role {
-        ADMIN, MANAGER, STAFF, AUDITOR
+        ADMIN, MANAGER, STAFF, AUDITOR, INVENTORY_MANAGER, WAREHOUSE_STAFF
     }
 }
 

@@ -6,7 +6,7 @@ spring:
     name: auth-service
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/auth_db}
+    url: ${DB_URL:jdbc:mysql://localhost:3306/inventory_auth_db?createDatabaseIfNotExist=true}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:himanshu@123}
     driver-class-name: com.mysql.cj.jdbc.Driver
