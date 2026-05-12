@@ -37,4 +37,29 @@ public class ReportController {
         reportService.deleteReport(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<List<Object>> getInventoryHealth() {
+        return ResponseEntity.ok(java.util.Collections.emptyList());
+    }
+
+    @GetMapping("/turnover")
+    public ResponseEntity<Object> getInventoryTurnover() {
+        return ResponseEntity.ok(new java.util.HashMap<>());
+    }
+
+    @GetMapping("/top-moving")
+    public ResponseEntity<List<Object>> getTopMovingProducts() {
+        return ResponseEntity.ok(java.util.Collections.emptyList());
+    }
+
+    @GetMapping("/dead-stock")
+    public ResponseEntity<List<Object>> getDeadStock(@RequestParam(defaultValue = "30") int days) {
+        return ResponseEntity.ok(java.util.Collections.emptyList());
+    }
+
+    @GetMapping("/utilization/{warehouseId}")
+    public ResponseEntity<Object> getWarehouseUtilization(@PathVariable Long warehouseId) {
+        return ResponseEntity.ok(new java.util.HashMap<>());
+    }
 }
