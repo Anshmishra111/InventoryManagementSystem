@@ -21,8 +21,8 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public List<Supplier> getAllActiveSuppliers() {
-        return supplierRepository.findAllByActiveTrue();
+    public List<Supplier> getAllSuppliers() {
+        return supplierRepository.findAll();
     }
 
     @Override
@@ -40,6 +40,13 @@ public class SupplierServiceImpl implements SupplierService {
         supplier.setPhone(supplierDetails.getPhone());
         supplier.setAddress(supplierDetails.getAddress());
         return supplierRepository.save(supplier);
+    }
+
+    @Override
+    public void activateSupplier(Long id) {
+        Supplier supplier = getSupplierById(id);
+        supplier.setActive(true);
+        supplierRepository.save(supplier);
     }
 
     @Override

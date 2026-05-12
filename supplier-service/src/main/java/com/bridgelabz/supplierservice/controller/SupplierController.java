@@ -23,8 +23,8 @@ public class SupplierController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Supplier>> getAllActiveSuppliers() {
-        return ResponseEntity.ok(supplierService.getAllActiveSuppliers());
+    public ResponseEntity<List<Supplier>> getAllSuppliers() {
+        return ResponseEntity.ok(supplierService.getAllSuppliers());
     }
 
     @GetMapping("/{id}")
@@ -35,6 +35,12 @@ public class SupplierController {
     @PutMapping("/{id}")
     public ResponseEntity<Supplier> updateSupplier(@PathVariable Long id, @RequestBody Supplier supplier) {
         return ResponseEntity.ok(supplierService.updateSupplier(id, supplier));
+    }
+
+    @PostMapping("/{id}/activate")
+    public ResponseEntity<Void> activateSupplier(@PathVariable Long id) {
+        supplierService.activateSupplier(id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
