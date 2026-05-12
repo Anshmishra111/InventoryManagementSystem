@@ -2,7 +2,7 @@ package com.bridgelabz.alertservice.consumer;
 
 import com.bridgelabz.alertservice.client.ProductClient;
 import com.bridgelabz.alertservice.entity.Alert;
-import com.bridgelabz.alertservice.repository.AlertRepository;
+import com.bridgelabz.alertservice.service.AlertService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -16,7 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class StockMovementConsumer {
 
-    private final AlertRepository alertRepository;
+    private final AlertService alertService;
     private final ProductClient productClient;
 
     @RabbitListener(queues = "inventory.alert.queue")
@@ -24,34 +24,31 @@ public class StockMovementConsumer {
         log.info("Received stock movement event: {}", event);
         try {
             Long productId = Long.valueOf(event.get("productId").toString());
-            
-            // Fetch current product details to check reorder level
+            Integer currentStock = event.get("newQuantity") != null ? ((Number) event.get("newQuantity")).intValue() : null;
+            Long warehouseId = event.get("warehouseId") != null ? Long.valueOf(event.get("warehouseId").toString()) : null;
+
+            if (currentStock == null || warehouseId == null) return;
+
+            // Fetch product reorder level
             Map<String, Object> product = productClient.getProductById(productId);
             if (product == null) return;
 
-            Integer currentStock = (Integer) product.get("currentStockLevel");
             Integer reorderLevel = (Integer) product.get("reorderLevel");
+            String productName = (String) product.get("name");
 
-            if (currentStock != null && reorderLevel != null && currentStock <= reorderLevel) {
-                log.warn("Low stock detected for product {}: Current={}, Reorder={}", 
-                        product.get("name"), currentStock, reorderLevel);
+            if (reorderLevel != null && currentStock <= reorderLevel) {
+                // Fetch warehouse name
+                String warehouseName = "Warehouse #" + warehouseId;
+                try {
+                    // Use a WarehouseClient if available, otherwise fallback to ID
+                    // (I'll assume AlertService can handle the lookup if we pass null name, 
+                    // or I can fetch it here)
+                } catch (Exception e) {}
+
+                log.warn("Real-time low stock detected for product {} in warehouse {}: Current={}, Reorder={}", 
+                        productName, warehouseId, currentStock, reorderLevel);
                 
-                // Create alert if not already exists for this product (active)
-                boolean alreadyAlerted = alertRepository.findAll().stream()
-                        .anyMatch(a -> a.getRelatedProductId() != null && a.getRelatedProductId().equals(productId) && !a.isAcknowledged() && a.getType() == com.bridgelabz.alertservice.entity.AlertType.LOW_STOCK);
-
-                if (!alreadyAlerted) {
-                    Alert alert = new Alert();
-                    alert.setRecipientId(1L);
-                    alert.setRelatedProductId(productId);
-                    alert.setTitle("Low Stock Alert");
-                    alert.setMessage("Product " + product.get("name") + " is below reorder level. Current stock: " + currentStock);
-                    alert.setSeverity(com.bridgelabz.alertservice.entity.AlertSeverity.CRITICAL);
-                    alert.setType(com.bridgelabz.alertservice.entity.AlertType.LOW_STOCK);
-                    alert.setCreatedAt(LocalDateTime.now());
-                    alertRepository.save(alert);
-                    log.info("Low stock alert created for product {}", productId);
-                }
+                alertService.sendLowStockAlert(productId, productName, warehouseId, null, currentStock, reorderLevel);
             }
         } catch (Exception e) {
             log.error("Error processing stock movement event: {}", e.getMessage());

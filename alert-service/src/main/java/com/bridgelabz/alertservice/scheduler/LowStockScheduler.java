@@ -2,6 +2,7 @@ package com.bridgelabz.alertservice.scheduler;
 
 import com.bridgelabz.alertservice.client.MovementClient;
 import com.bridgelabz.alertservice.client.ProductClient;
+import com.bridgelabz.alertservice.client.WarehouseClient;
 import com.bridgelabz.alertservice.service.AlertService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,10 @@ public class LowStockScheduler {
 
     private final MovementClient movementClient;
     private final ProductClient productClient;
+    private final WarehouseClient warehouseClient;
     private final AlertService alertService;
 
-    // Run every 15 minutes as per Section 6
+    // Run every 15 minutes
     @Scheduled(fixedRate = 900000)
     public void checkLowStock() {
         log.info("Starting scheduled low-stock check...");
@@ -35,11 +37,15 @@ public class LowStockScheduler {
                 
                 Map<String, Object> product = productClient.getProductById(productId);
                 Integer reorderLevel = (Integer) product.get("reorderLevel");
+                String productName = (String) product.get("name");
+                
+                Map<String, Object> warehouse = warehouseClient.getWarehouseById(warehouseId);
+                String warehouseName = (String) warehouse.get("name");
                 
                 if (reorderLevel != null && currentQty < reorderLevel) {
-                    log.warn("Low stock detected for Product ID {} in Warehouse {}. Current: {}, Threshold: {}", 
-                            productId, warehouseId, currentQty, reorderLevel);
-                    alertService.sendLowStockAlert(productId, warehouseId, currentQty, reorderLevel);
+                    log.warn("Low stock detected for {} in {}. Current: {}, Threshold: {}", 
+                            productName, warehouseName, currentQty, reorderLevel);
+                    alertService.sendLowStockAlert(productId, productName, warehouseId, warehouseName, currentQty, reorderLevel);
                 }
             }
         } catch (Exception e) {

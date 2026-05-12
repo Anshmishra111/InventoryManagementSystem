@@ -45,4 +45,38 @@ public class AlertController {
     public ResponseEntity<List<AlertHistory>> getHistoryByProductId(@PathVariable Long productId) {
         return ResponseEntity.ok(alertService.getHistoryByProductId(productId));
     }
+
+    @GetMapping
+    public ResponseEntity<List<com.bridgelabz.alertservice.entity.Alert>> getAllAlerts() {
+        return ResponseEntity.ok(alertService.getAllAlerts());
+    }
+
+    @GetMapping("/recipient/{recipientId}")
+    public ResponseEntity<List<com.bridgelabz.alertservice.entity.Alert>> getAlertsByRecipient(@PathVariable Long recipientId) {
+        return ResponseEntity.ok(alertService.getAlertsByRecipient(recipientId));
+    }
+
+    @PutMapping("/{id}/read")
+    public ResponseEntity<Void> markAsRead(@PathVariable Long id) {
+        alertService.markAsRead(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/read-all")
+    public ResponseEntity<Void> markAllRead() {
+        // Defaulting to user 1 for now
+        alertService.markAllAsRead(1L);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/acknowledge")
+    public ResponseEntity<Void> acknowledge(@PathVariable Long id) {
+        alertService.acknowledge(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/recipient/{recipientId}/unread-count")
+    public ResponseEntity<Long> getUnreadCount(@PathVariable Long recipientId) {
+        return ResponseEntity.ok(alertService.getUnreadCount(recipientId));
+    }
 }
