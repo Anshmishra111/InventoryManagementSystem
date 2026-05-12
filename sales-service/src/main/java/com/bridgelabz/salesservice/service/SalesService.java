@@ -10,4 +10,5 @@ public interface SalesService {
     SalesOrder placeOrder(SalesOrder order);
     List<SalesOrder> getOrdersByCustomerId(Long customerId);
     List<SalesOrder> getAllOrders();
+    SalesOrder updateStatus(Long id, String status);
 }

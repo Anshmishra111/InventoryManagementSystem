@@ -46,4 +46,12 @@ public class SalesServiceImpl implements SalesService {
     public List<SalesOrder> getAllOrders() {
         return salesOrderRepository.findAll();
     }
+
+    @Override
+    public SalesOrder updateStatus(Long id, String status) {
+        SalesOrder order = salesOrderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
+        order.setStatus(status);
+        return salesOrderRepository.save(order);
+    }
 }

@@ -30,5 +30,6 @@ public class SalesOrder {
 
     private LocalDateTime orderDate = LocalDateTime.now();
 
+    private Long warehouseId;
     private String status = "COMPLETED";
 }

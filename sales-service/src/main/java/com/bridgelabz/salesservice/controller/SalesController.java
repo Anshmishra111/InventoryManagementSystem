@@ -42,4 +42,9 @@ public class SalesController {
     public ResponseEntity<List<SalesOrder>> getOrdersByCustomerId(@PathVariable Long customerId) {
         return ResponseEntity.ok(salesService.getOrdersByCustomerId(customerId));
     }
+
+    @PutMapping("/orders/{id}/status")
+    public ResponseEntity<SalesOrder> updateStatus(@PathVariable Long id, @RequestParam String status) {
+        return ResponseEntity.ok(salesService.updateStatus(id, status));
+    }
 }
