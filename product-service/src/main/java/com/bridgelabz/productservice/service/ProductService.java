@@ -8,8 +8,9 @@ public interface ProductService {
     Product updateProduct(Long id, Product productDetails);
     Product getProductById(Long id);
     Product getProductBySku(String sku);
-    List<Product> getAllActiveProducts();
+    List<Product> getAllProducts();
     List<Product> getLowStockProducts();
+    void activateProduct(Long id);
     void softDeleteProduct(Long id);
     void updateStock(Long productId, int change, Double unitCost);
     List<Product> getProductsByCategory(String category);

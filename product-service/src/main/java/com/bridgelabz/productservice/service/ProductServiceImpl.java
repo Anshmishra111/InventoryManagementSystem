@@ -71,14 +71,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Cacheable(value = "products", key = "'all_active'")
-    public List<Product> getAllActiveProducts() {
-        return productRepository.findByIsActiveTrue();
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
     @Override
     public List<Product> getLowStockProducts() {
         return productRepository.findLowStockProducts();
+    }
+
+    @Override
+    @Transactional
+    public void activateProduct(Long id) {
+        Product product = getProductById(id);
+        product.setActive(true);
+        productRepository.save(product);
     }
 
     @Override

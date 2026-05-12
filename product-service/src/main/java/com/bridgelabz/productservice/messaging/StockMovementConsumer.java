@@ -28,6 +28,8 @@ public class StockMovementConsumer {
             int change = quantity;
             if (type.equals("STOCK_OUT") || type.equals("TRANSFER_OUT") || type.equals("WRITE_OFF")) {
                 change = -quantity;
+            } else if (type.equals("INTERNAL")) {
+                change = 0; // Internal transfers don't change TOTAL stock level
             }
 
             log.info("Updating product {} stock by {} with cost {}", productId, change, unitCost);

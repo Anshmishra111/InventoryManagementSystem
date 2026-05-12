@@ -39,8 +39,15 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllActiveProducts() {
-        return ResponseEntity.ok(productService.getAllActiveProducts());
+    public ResponseEntity<List<Product>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
+    }
+
+    @PostMapping("/{id}/activate")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> activateProduct(@PathVariable Long id) {
+        productService.activateProduct(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/low-stock")
