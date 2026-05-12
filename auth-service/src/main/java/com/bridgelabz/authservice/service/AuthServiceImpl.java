@@ -45,24 +45,30 @@ public class AuthServiceImpl implements AuthService {
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
+                .phone(request.getPhone())
                 .department(request.getDepartment())
                 .isActive(true)
                 .build();
 
         user = userRepository.save(user);
 
-        // Publish registration event (gracefully handle if RabbitMQ is down)
-        try {
-            eventPublisher.publishUserRegistered(new com.bridgelabz.authservice.messaging.UserEventPublisher.UserRegisteredEvent(
-                    user.getId(),
-                    user.getEmail(),
-                    user.getFullName(),
-                    user.getRole().name()
-            ));
-        } catch (Exception e) {
-            System.err.println("Failed to publish registration event: " + e.getMessage());
-            // We still proceed with the registration since the user is already saved to DB
-        }
+        // Publish registration event in background thread (non-blocking)
+        // This ensures registration succeeds even if RabbitMQ is offline
+        final Long savedUserId = user.getId();
+        final String savedEmail = user.getEmail();
+        final String savedFullName = user.getFullName();
+        final String savedRole = user.getRole().name();
+        Thread eventThread = new Thread(() -> {
+            try {
+                eventPublisher.publishUserRegistered(new com.bridgelabz.authservice.messaging.UserEventPublisher.UserRegisteredEvent(
+                        savedUserId, savedEmail, savedFullName, savedRole
+                ));
+            } catch (Exception e) {
+                System.err.println("Failed to publish registration event (non-critical): " + e.getMessage());
+            }
+        });
+        eventThread.setDaemon(true);
+        eventThread.start();
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
         String token = jwtProvider.generateToken(userDetails);
@@ -106,14 +112,15 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public User updateUser(Long id, java.util.Map<String, Object> userData) {
+    public User updateUser(Long id, User userData) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("User not found"));
         
-        if (userData.containsKey("fullName")) user.setFullName((String) userData.get("fullName"));
-        if (userData.containsKey("role")) user.setRole(User.Role.valueOf((String) userData.get("role")));
-        if (userData.containsKey("department")) user.setDepartment((String) userData.get("department"));
-        if (userData.containsKey("isActive")) user.setActive((boolean) userData.get("isActive"));
+        if (userData.getFullName() != null) user.setFullName(userData.getFullName());
+        if (userData.getRole() != null) user.setRole(userData.getRole());
+        if (userData.getPhone() != null) user.setPhone(userData.getPhone());
+        if (userData.getDepartment() != null) user.setDepartment(userData.getDepartment());
+        user.setActive(userData.isActive());
         
         return userRepository.save(user);
     }
@@ -121,9 +128,65 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public void logout(String email) {
+        // In a stateless JWT system, logout is usually handled by the client by deleting the token.
+        // For server-side logout, we could implement a token blacklist in Redis.
+        System.out.println("User logged out: " + email);
+    }
+
+    @Override
+    public boolean validateToken(String token) {
+        try {
+            String username = jwtProvider.extractUsername(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            return jwtProvider.validateToken(token, userDetails);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public AuthResponse refreshToken(String token) {
+        String username = jwtProvider.extractUsername(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if (jwtProvider.validateToken(token, userDetails)) {
+            String newToken = jwtProvider.generateToken(userDetails);
+            User user = userRepository.findByEmail(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            return AuthResponse.builder()
+                    .token(newToken)
+                    .email(user.getEmail())
+                    .role(user.getRole().name())
+                    .build();
+        }
+        throw new RuntimeException("Invalid token for refresh");
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
+            throw new RuntimeException("Incorrect old password");
+        }
+        
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deactivateUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        userRepository.delete(user);
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(false);
+        userRepository.save(user);
     }
 }
 

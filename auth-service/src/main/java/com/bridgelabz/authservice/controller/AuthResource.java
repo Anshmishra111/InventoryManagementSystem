@@ -32,19 +32,50 @@ public class AuthResource {
     public ResponseEntity<User> getProfile(Authentication authentication) {
         return ResponseEntity.ok(authService.getCurrentUserProfile(authentication.getName()));
     }
+
     @GetMapping("/users")
     public ResponseEntity<java.util.List<User>> getAllUsers() {
         return ResponseEntity.ok(authService.getAllUsers());
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody java.util.Map<String, Object> userData) {
-        return ResponseEntity.ok(authService.updateUser(id, userData));
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        return ResponseEntity.ok(authService.updateUser(id, user));
     }
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         authService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(Authentication authentication) {
+        authService.logout(authentication.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestHeader("Authorization") String token) {
+        if (token.startsWith("Bearer ")) token = token.substring(7);
+        return ResponseEntity.ok(authService.refreshToken(token));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<User> updateProfile(Authentication authentication, @RequestBody User user) {
+        User current = authService.getCurrentUserProfile(authentication.getName());
+        return ResponseEntity.ok(authService.updateUser(current.getId(), user));
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<Void> changePassword(Authentication authentication, @RequestBody java.util.Map<String, String> request) {
+        authService.changePassword(authentication.getName(), request.get("oldPassword"), request.get("newPassword"));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/deactivate/{id}")
+    public ResponseEntity<Void> deactivateUser(@PathVariable Long id) {
+        authService.deactivateUser(id);
         return ResponseEntity.ok().build();
     }
 }

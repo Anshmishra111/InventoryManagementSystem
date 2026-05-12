@@ -10,7 +10,12 @@ public interface AuthService {
     AuthResponse login(LoginRequest request);
     User getCurrentUserProfile(String email);
     java.util.List<User> getAllUsers();
-    User updateUser(Long id, java.util.Map<String, Object> userData);
+    User updateUser(Long id, User user);
     void deleteUser(Long id);
+    void logout(String email);
+    boolean validateToken(String token);
+    AuthResponse refreshToken(String token);
+    void changePassword(String email, String oldPassword, String newPassword);
+    void deactivateUser(Long id);
 }
 

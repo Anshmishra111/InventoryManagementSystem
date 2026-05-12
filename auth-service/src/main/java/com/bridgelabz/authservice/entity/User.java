@@ -26,8 +26,10 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+    private String phone;
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 50)
     private Role role;
 
     @Column(length = 50)
@@ -47,7 +49,7 @@ public class User {
     }
 
     public enum Role {
-        ADMIN, MANAGER, STAFF, AUDITOR, INVENTORY_MANAGER, WAREHOUSE_STAFF
+        ADMIN, INVENTORY_MANAGER, WAREHOUSE_STAFF, PURCHASE_OFFICER
     }
 }
 
