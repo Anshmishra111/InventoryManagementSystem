@@ -9,4 +9,6 @@ public interface MovementService {
     List<Inventory> getInventoryByProductId(Long productId);
     List<Inventory> getInventoryByWarehouseId(Long warehouseId);
     List<StockMovement> getMovementHistoryByProductId(Long productId);
+    List<Inventory> getAllInventory();
+    List<StockMovement> getAllMovements();
 }

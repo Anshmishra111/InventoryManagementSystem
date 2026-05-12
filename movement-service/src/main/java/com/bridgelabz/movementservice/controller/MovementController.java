@@ -37,4 +37,14 @@ public class MovementController {
     public ResponseEntity<List<StockMovement>> getMovementHistoryByProductId(@PathVariable Long productId) {
         return ResponseEntity.ok(movementService.getMovementHistoryByProductId(productId));
     }
+
+    @GetMapping
+    public ResponseEntity<List<StockMovement>> getAllMovements() {
+        return ResponseEntity.ok(movementService.getAllMovements());
+    }
+
+    @GetMapping("/inventory")
+    public ResponseEntity<List<Inventory>> getAllInventory() {
+        return ResponseEntity.ok(movementService.getAllInventory());
+    }
 }

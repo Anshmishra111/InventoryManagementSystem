@@ -46,25 +46,45 @@ public class MovementServiceImpl implements MovementService {
                 .findByProductIdAndWarehouseId(movement.getProductId(), movement.getWarehouseId())
                 .orElse(new Inventory(null, movement.getProductId(), movement.getWarehouseId(), 0));
 
-        if (movement.getType() == MovementType.IN) {
+        if (movement.getType() == MovementType.IN || movement.getType() == MovementType.STOCK_IN || movement.getType() == MovementType.TRANSFER_IN) {
             inventory.setQuantity(inventory.getQuantity() + movement.getQuantity());
-        } else if (movement.getType() == MovementType.OUT) {
+        } else if (movement.getType() == MovementType.OUT || movement.getType() == MovementType.STOCK_OUT || movement.getType() == MovementType.TRANSFER_OUT) {
             if (inventory.getQuantity() < movement.getQuantity()) {
                 throw new RuntimeException("Insufficient stock in warehouse " + movement.getWarehouseId() 
                         + " for product " + movement.getProductId());
             }
             inventory.setQuantity(inventory.getQuantity() - movement.getQuantity());
+        } else if (movement.getType() == MovementType.INTERNAL || movement.getType() == MovementType.TRANSFER_IN || movement.getType() == MovementType.TRANSFER_OUT) {
+            // Handle Internal Transfer
+            if (movement.getToWarehouseId() == null) {
+                throw new RuntimeException("Destination warehouse (toWarehouseId) is required for internal transfer");
+            }
+            
+            // 1. Subtract from source
+            if (inventory.getQuantity() < movement.getQuantity()) {
+                throw new RuntimeException("Insufficient stock in source warehouse " + movement.getWarehouseId());
+            }
+            inventory.setQuantity(inventory.getQuantity() - movement.getQuantity());
+            
+            // 2. Add to destination
+            Inventory destInventory = inventoryRepository
+                    .findByProductIdAndWarehouseId(movement.getProductId(), movement.getToWarehouseId())
+                    .orElse(new Inventory(null, movement.getProductId(), movement.getToWarehouseId(), 0));
+            destInventory.setQuantity(destInventory.getQuantity() + movement.getQuantity());
+            inventoryRepository.save(destInventory);
         }
-        // INTERNAL logic can be expanded here if needed (subtract from source, add to dest)
 
         inventoryRepository.save(inventory);
         StockMovement savedMovement = stockMovementRepository.save(movement);
         
-        // Emit event to RabbitMQ for Product Service to sync stock
+        // Emit event to RabbitMQ for Alert Service and others
         try {
             java.util.Map<String, Object> event = new java.util.HashMap<>();
             event.put("productId", savedMovement.getProductId());
             event.put("quantity", savedMovement.getQuantity());
+            event.put("warehouseId", savedMovement.getWarehouseId());
+            event.put("toWarehouseId", savedMovement.getToWarehouseId());
+            event.put("newQuantity", inventory.getQuantity());
             event.put("type", savedMovement.getType().toString());
             event.put("timestamp", savedMovement.getTimestamp());
             
@@ -91,5 +111,15 @@ public class MovementServiceImpl implements MovementService {
     @Override
     public List<StockMovement> getMovementHistoryByProductId(Long productId) {
         return stockMovementRepository.findAllByProductId(productId);
+    }
+
+    @Override
+    public List<Inventory> getAllInventory() {
+        return inventoryRepository.findAll();
+    }
+
+    @Override
+    public List<StockMovement> getAllMovements() {
+        return stockMovementRepository.findAll();
     }
 }

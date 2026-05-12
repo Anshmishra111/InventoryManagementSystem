@@ -34,4 +34,18 @@ public class StockMovement implements Serializable {
     private LocalDateTime timestamp = LocalDateTime.now();
     
     private String reason; // Optional: e.g., "Purchase Order #123"
+    
+    private String performedBy;
+    
+    private Long referenceId;
+    
+    private String referenceType;
+    
+    private Long toWarehouseId;
+    
+    private String notes;
+    
+    private Double unitCost;
+    
+    private Integer balanceAfter;
 }
