@@ -29,10 +29,15 @@ public class PurchaseServiceImpl implements PurchaseService {
         
         // Ensure child items have back-reference and calculate total
         double total = 0;
-        for (PurchaseOrderItem item : order.getItems()) {
-            item.setPurchaseOrder(order);
-            Double price = item.getUnitPrice() != null ? item.getUnitPrice() : 0.0;
-            total += (item.getQuantity() * price);
+        if (order.getItems() != null) {
+            for (PurchaseOrderItem item : order.getItems()) {
+                item.setPurchaseOrder(order);
+                if (item.getUnitPrice() == null) item.setUnitPrice(0.0);
+                if (item.getQuantity() == null) item.setQuantity(0);
+                if (item.getReceivedQty() == null) item.setReceivedQty(0);
+                item.setTotalCost(item.getQuantity() * item.getUnitPrice());
+                total += item.getTotalCost();
+            }
         }
         order.setTotalAmount(total);
         
