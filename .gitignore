@@ -1,0 +1,14 @@
+target/
+*.class
+.vscode/
+.idea/
+*.iml
+bin/
+out/
+.DS_Store
+frontend/dist/
+frontend/node_modules/
+service_log.txt
+service_err.txt
+
+frontend/
