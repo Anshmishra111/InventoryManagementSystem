@@ -7,7 +7,7 @@ services:
     rootDir: auth-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_auth_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_auth_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
@@ -27,7 +27,7 @@ services:
     rootDir: product-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_product_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_product_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
@@ -47,7 +47,7 @@ services:
     rootDir: warehouse-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_warehouse_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_warehouse_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
@@ -67,7 +67,7 @@ services:
     rootDir: supplier-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_supplier_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_supplier_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
@@ -87,7 +87,7 @@ services:
     rootDir: purchase-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_purchase_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_purchase_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
@@ -107,7 +107,7 @@ services:
     rootDir: movement-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_movement_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_movement_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
@@ -127,7 +127,7 @@ services:
     rootDir: alert-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_alert_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_alert_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
@@ -147,7 +147,7 @@ services:
     rootDir: sales-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_sales_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_sales_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
@@ -167,7 +167,7 @@ services:
     rootDir: report-service
     envVars:
       - key: DB_URL
-        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_report_db?ssl-mode=REQUIRED
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_report_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
