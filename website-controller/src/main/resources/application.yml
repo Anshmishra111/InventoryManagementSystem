@@ -2,6 +2,12 @@ server:
   port: 9090
 
 spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: 5672
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+
   application:
     name: website-controller
   
@@ -21,3 +27,4 @@ services:
   alert: ${ALERT_SERVICE_URL:http://localhost:8087}
   sales: ${SALES_SERVICE_URL:http://localhost:8088}
   report: ${REPORT_SERVICE_URL:http://localhost:8089}
+

@@ -2,6 +2,12 @@ server:
   port: 8081
 
 spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: 5672
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+
   application:
     name: auth-service
 
@@ -30,3 +36,4 @@ app:
   jwt:
     secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
     expiration-ms: 28800000 # 8 hours
+
