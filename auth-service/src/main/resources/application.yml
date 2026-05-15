@@ -2,19 +2,13 @@ server:
   port: 8081
 
 spring:
-  rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: 5672
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
-
   application:
     name: auth-service
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/inventory_auth_db?createDatabaseIfNotExist=true}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:himanshu@123}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -23,10 +17,10 @@ spring:
     show-sql: true
 
   rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    host: ${RABBITMQ_HOST}
+    port: 5672
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
     connection-timeout: 3000
     listener:
       simple:
@@ -36,4 +30,3 @@ app:
   jwt:
     secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
     expiration-ms: 28800000 # 8 hours
-
