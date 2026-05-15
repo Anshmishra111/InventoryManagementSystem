@@ -1,0 +1,233 @@
+services:
+  # 1. Auth Service
+  - type: web
+    name: ims-auth-service
+    env: docker
+    plan: free
+    rootDir: auth-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_auth_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false # You will enter this in Render Dashboard
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 2. Product Service
+  - type: web
+    name: ims-product-service
+    env: docker
+    plan: free
+    rootDir: product-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_product_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 3. Warehouse Service
+  - type: web
+    name: ims-warehouse-service
+    env: docker
+    plan: free
+    rootDir: warehouse-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_warehouse_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 4. Supplier Service
+  - type: web
+    name: ims-supplier-service
+    env: docker
+    plan: free
+    rootDir: supplier-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_supplier_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 5. Purchase Service
+  - type: web
+    name: ims-purchase-service
+    env: docker
+    plan: free
+    rootDir: purchase-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_purchase_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 6. Movement Service
+  - type: web
+    name: ims-movement-service
+    env: docker
+    plan: free
+    rootDir: movement-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_movement_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 7. Alert Service
+  - type: web
+    name: ims-alert-service
+    env: docker
+    plan: free
+    rootDir: alert-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_alert_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 8. Sales Service
+  - type: web
+    name: ims-sales-service
+    env: docker
+    plan: free
+    rootDir: sales-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_sales_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 9. Report Service
+  - type: web
+    name: ims-report-service
+    env: docker
+    plan: free
+    rootDir: report-service
+    envVars:
+      - key: DB_URL
+        value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_report_db
+      - key: DB_USERNAME
+        value: avnadmin
+      - key: DB_PASSWORD
+        sync: false
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: RABBITMQ_USERNAME
+        sync: false
+      - key: RABBITMQ_PASSWORD
+        sync: false
+
+  # 10. Website Controller (API Gateway)
+  - type: web
+    name: ims-gateway
+    env: docker
+    plan: free
+    rootDir: website-controller
+    envVars:
+      - key: AUTH_SERVICE_URL
+        fromService:
+          name: ims-auth-service
+          type: web
+          property: host
+      - key: PRODUCT_SERVICE_URL
+        fromService:
+          name: ims-product-service
+          type: web
+          property: host
+      - key: WAREHOUSE_SERVICE_URL
+        fromService:
+          name: ims-warehouse-service
+          type: web
+          property: host
+      - key: SUPPLIER_SERVICE_URL
+        fromService:
+          name: ims-supplier-service
+          type: web
+          property: host
+      - key: PURCHASE_SERVICE_URL
+        fromService:
+          name: ims-purchase-service
+          type: web
+          property: host
+      - key: MOVEMENT_SERVICE_URL
+        fromService:
+          name: ims-movement-service
+          type: web
+          property: host
+      - key: ALERT_SERVICE_URL
+        fromService:
+          name: ims-alert-service
+          type: web
+          property: host
+      - key: SALES_SERVICE_URL
+        fromService:
+          name: ims-sales-service
+          type: web
+          property: host
+      - key: REPORT_SERVICE_URL
+        fromService:
+          name: ims-report-service
+          type: web
+          property: host
