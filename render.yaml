@@ -6,12 +6,14 @@ services:
     plan: free
     rootDir: auth-service
     envVars:
+      - key: PORT
+        value: 8081
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_auth_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
         value: avnadmin
       - key: DB_PASSWORD
-        sync: false # You will enter this in Render Dashboard
+        sync: false
       - key: RABBITMQ_HOST
         sync: false
       - key: RABBITMQ_USERNAME
@@ -26,6 +28,8 @@ services:
     plan: free
     rootDir: product-service
     envVars:
+      - key: PORT
+        value: 8082
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_product_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
@@ -46,6 +50,8 @@ services:
     plan: free
     rootDir: warehouse-service
     envVars:
+      - key: PORT
+        value: 8083
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_warehouse_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
@@ -66,6 +72,8 @@ services:
     plan: free
     rootDir: supplier-service
     envVars:
+      - key: PORT
+        value: 8084
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_supplier_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
@@ -86,6 +94,8 @@ services:
     plan: free
     rootDir: purchase-service
     envVars:
+      - key: PORT
+        value: 8085
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_purchase_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
@@ -106,6 +116,8 @@ services:
     plan: free
     rootDir: movement-service
     envVars:
+      - key: PORT
+        value: 8086
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_movement_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
@@ -126,6 +138,8 @@ services:
     plan: free
     rootDir: alert-service
     envVars:
+      - key: PORT
+        value: 8087
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_alert_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
@@ -146,6 +160,8 @@ services:
     plan: free
     rootDir: sales-service
     envVars:
+      - key: PORT
+        value: 8088
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_sales_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
@@ -166,6 +182,8 @@ services:
     plan: free
     rootDir: report-service
     envVars:
+      - key: PORT
+        value: 8089
       - key: DB_URL
         value: jdbc:mysql://mysql-d202fff-anshmishra75436-75cc.g.aivencloud.com:13114/inventory_report_db?ssl-mode=REQUIRED&allowPublicKeyRetrieval=true
       - key: DB_USERNAME
@@ -187,47 +205,20 @@ services:
     rootDir: website-controller
     envVars:
       - key: AUTH_SERVICE_URL
-        fromService:
-          name: ims-auth-service
-          type: web
-          property: host
+        value: http://ims-auth-service:8081
       - key: PRODUCT_SERVICE_URL
-        fromService:
-          name: ims-product-service
-          type: web
-          property: host
+        value: http://ims-product-service:8082
       - key: WAREHOUSE_SERVICE_URL
-        fromService:
-          name: ims-warehouse-service
-          type: web
-          property: host
+        value: http://ims-warehouse-service:8083
       - key: SUPPLIER_SERVICE_URL
-        fromService:
-          name: ims-supplier-service
-          type: web
-          property: host
+        value: http://ims-supplier-service:8084
       - key: PURCHASE_SERVICE_URL
-        fromService:
-          name: ims-purchase-service
-          type: web
-          property: host
+        value: http://ims-purchase-service:8085
       - key: MOVEMENT_SERVICE_URL
-        fromService:
-          name: ims-movement-service
-          type: web
-          property: host
+        value: http://ims-movement-service:8086
       - key: ALERT_SERVICE_URL
-        fromService:
-          name: ims-alert-service
-          type: web
-          property: host
+        value: http://ims-alert-service:8087
       - key: SALES_SERVICE_URL
-        fromService:
-          name: ims-sales-service
-          type: web
-          property: host
+        value: http://ims-sales-service:8088
       - key: REPORT_SERVICE_URL
-        fromService:
-          name: ims-report-service
-          type: web
-          property: host
+        value: http://ims-report-service:8089
